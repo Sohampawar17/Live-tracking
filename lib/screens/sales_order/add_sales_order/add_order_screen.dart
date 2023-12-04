@@ -1,8 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocation/widgets/full_screen_loader.dart';
-import 'package:geolocation/widgets/textfielddecoration.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:logger/logger.dart';
 import 'package:stacked/stacked.dart';
@@ -92,7 +90,7 @@ class _AddOrderScreenState extends State<AddOrderScreen> {
         contentPadding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 12.0),
         labelText: 'Delivery date',
         hintText: 'Delivery Date',
-        prefixIcon:Icon(Icons.calendar_today_rounded),
+        prefixIcon:const Icon(Icons.calendar_today_rounded),
         labelStyle: const TextStyle(
           color: Colors.black54, // Customize label text color
           fontSize: 16.0,
@@ -153,7 +151,7 @@ class _AddOrderScreenState extends State<AddOrderScreen> {
         contentPadding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 12.0),
         labelText: 'Items',
         hintText: 'For select items click here',
-        prefixIcon:Icon(Icons.shopping_basket),
+        prefixIcon:const Icon(Icons.shopping_basket),
         labelStyle: const TextStyle(
           color: Colors.black54, // Customize label text color
           fontSize: 16.0,
