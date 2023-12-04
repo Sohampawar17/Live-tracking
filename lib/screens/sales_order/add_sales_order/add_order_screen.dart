@@ -52,48 +52,31 @@ class _AddOrderScreenState extends State<AddOrderScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-        SizedBox(
-          height: 60,
-          child: DropdownSearch<String>(
-              popupProps: const PopupProps.menu(
-                showSearchBox: true,
-          showSelectedItems: true,
-              ),
-              items:model.searchcutomer,
-              dropdownDecoratorProps:  DropDownDecoratorProps(
-          dropdownSearchDecoration: AppInputDecorations.textFieldDecoration(labelText: 'Customers', hintText: 'select the customers', prefixIcon: Icons.person_2_outlined),
-              ),
-              onChanged: model.setcustomer,
-              selectedItem: model.orderdata.customer,
-          ),
-        ),
+                  CustomDropdownButton2(value: model.orderdata.customer,prefixIcon: Icons.person_2,items: model.searchcutomer, hintText: 'Select the customer', labelText: 'Customer', onChanged:  model.setcustomer,),
+        // SizedBox(
+        //   height: 60,
+        //   child: DropdownSearch<String>(
+        //       popupProps: const PopupProps.menu(
+        //         showSearchBox: true,
+        //   showSelectedItems: true,
+        //       ),
+        //       items:model.searchcutomer,
+        //       dropdownDecoratorProps:  DropDownDecoratorProps(
+        //   dropdownSearchDecoration: AppInputDecorations.textFieldDecoration(labelText: 'Customers', hintText: 'select the customers', prefixIcon: Icons.person_2_outlined),
+        //       ),
+        //       onChanged: model.setcustomer,
+        //       selectedItem: model.orderdata.customer,
+        //   ),
+        // ),
                 
                   const SizedBox(
-                    height: 8,
+                    height: 15,
                   ),
                   Row(
                     children: [
                       Expanded(
                         flex: 1,
-                        child: CdropDown(
-                          dropdownButton: DropdownButtonFormField<String>(
-                              isExpanded: true,
-                              value: model.orderdata.orderType,
-                              // Replace null with the selected value if needed
-                              decoration: const InputDecoration(
-                                 constraints: BoxConstraints(maxHeight: 60),
-                                labelText: 'Order Type',
-                              ),
-                              hint: const Text('Select Order type'),
-                              items: model.ordetype.map((val) {
-                                return DropdownMenuItem<String>(
-                                  value: val,
-                                  child: Text(val),
-                                );
-                              }).toList(),
-                              onChanged: (value) => model.setordertype(value),
-                              validator: model.validateordertype),
-                        ),
+                        child:CustomDropdownButton2(items:model.ordetype, hintText: 'select the order type', onChanged: model.setordertype, labelText: 'Order Type',),
                       ),
                       const SizedBox(
                         width: 10,
@@ -104,43 +87,52 @@ class _AddOrderScreenState extends State<AddOrderScreen> {
                           readOnly: true,
                           controller: model.deliverydatecontroller,
                           onTap: () => model.selectdeliveryDate(context),
-                          decoration: AppInputDecorations.textFieldDecoration(
-                              labelText: 'Delivery Date',
-                              hintText: 'YYYY-MM-dd',
-                              prefixIcon: Icons.calendar_today),
+                          decoration: InputDecoration(
+       
+        contentPadding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 12.0),
+        labelText: 'Delivery date',
+        hintText: 'Delivery Date',
+        prefixIcon:Icon(Icons.calendar_today_rounded),
+        labelStyle: const TextStyle(
+          color: Colors.black54, // Customize label text color
+          fontSize: 16.0,
+          fontWeight: FontWeight.bold,
+        ),
+        hintStyle: const TextStyle(
+          color: Colors.grey, // Customize hint text color
+        ),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(18.0),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(18.0),
+          borderSide: const BorderSide(
+            color: Colors.blue, // Customize focused border color
+          ),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(18.0),
+          borderSide: const BorderSide(
+            color: Colors.grey, // Customize enabled border color
+          ),
+        ),
+      ),
                           validator: model.validatedeliveryDob,
                           onChanged: model.ondeliveryDobChanged,
                         ),
                       ),
                     ],
                   ),
-                  CdropDown(
-                    dropdownButton: DropdownButtonFormField<String>(
-                      isExpanded: true,
-                      value: model.orderdata.setWarehouse,
-                 decoration: const InputDecoration(
-                   constraints: BoxConstraints(maxHeight: 60),
-                                labelText: 'Set Warehouse',
-                              ),
-                              hint: const Text('Select Warehouse'),
-                      items: model.warehouse.map((val) {
-                        return DropdownMenuItem<String>(
-                          alignment: AlignmentDirectional.topStart,
-                          value: val,
-                          child: Text(val),
-                        );
-                      }).toList(),
-                      onChanged: (value) => model.setwarehouse(value),
-                      validator: model.validatewarehouse,
-                      menuMaxHeight: 500,
-                    ),
+                   const SizedBox(
+                    height: 15,
                   ),
-                  const SizedBox(
-                    height: 8,
+                  CustomDropdownButton2(prefixIcon:Icons.warehouse_outlined,items: model.warehouse, hintText: 'select the warehouse', onChanged: model.setwarehouse, labelText: 'Set Warehouse',value: model.orderdata.setWarehouse,),
+                   const SizedBox(
+                    height: 15,
                   ),
                   TextFormField(
                     readOnly: true,
-                    
+                  
                     onTap: () async {
                         final SelectedItems = await Navigator.pushNamed(
                           context,
@@ -156,35 +148,39 @@ class _AddOrderScreenState extends State<AddOrderScreen> {
                           model.setSelectedItems(SelectedItems);
                         }
                     },
-                    decoration: InputDecoration(
-                      constraints: BoxConstraints(maxHeight: 60),
-                      hintText: 'click here to select items',
-                      labelText: 'Items',
-                      prefixIcon:const Icon(Icons.shopping_cart_outlined) ,
-                      suffixIcon: const Icon(Icons.arrow_drop_down),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10.0),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: const BorderSide(color: Colors.blue, width: 2.0),
-                        borderRadius: BorderRadius.circular(10.0),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: const BorderSide(color: Colors.grey, width: 1.0),
-                        borderRadius: BorderRadius.circular(10.0),
-                      ),
-                      errorBorder: OutlineInputBorder(
-                        borderSide: const BorderSide(color: Colors.red, width: 1.0),
-                        borderRadius: BorderRadius.circular(10.0),
-                      ),
-                      focusedErrorBorder: OutlineInputBorder(
-                        borderSide: const BorderSide(color: Colors.red, width: 2.0),
-                        borderRadius: BorderRadius.circular(10.0),
-                      ),
-                    ),
+                     decoration: InputDecoration(
+       
+        contentPadding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 12.0),
+        labelText: 'Items',
+        hintText: 'For select items click here',
+        prefixIcon:Icon(Icons.shopping_basket),
+        labelStyle: const TextStyle(
+          color: Colors.black54, // Customize label text color
+          fontSize: 16.0,
+          fontWeight: FontWeight.bold,
+        ),
+        hintStyle: const TextStyle(
+          color: Colors.grey, // Customize hint text color
+        ),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(18.0),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(18.0),
+          borderSide: const BorderSide(
+            color: Colors.blue, // Customize focused border color
+          ),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(18.0),
+          borderSide: const BorderSide(
+            color: Colors.grey, // Customize enabled border color
+          ),
+        ),
+      ),
                   ),
                   const SizedBox(
-                    height: 8,
+                    height: 15,
                   ),
                   if (model.selectedItems.isNotEmpty)
                     ListView.separated(

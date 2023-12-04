@@ -62,6 +62,7 @@ dependencies:
   url_launcher_android: ^6.2.0
   dropdown_search: ^5.0.6
   intl: ^0.18.1
+  dropdown_button2: ^2.3.9
 
 
 dev_dependencies:

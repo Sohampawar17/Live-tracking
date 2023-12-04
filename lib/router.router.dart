@@ -5,12 +5,17 @@
 // **************************************************************************
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:flutter/foundation.dart' as _i10;
-import 'package:flutter/material.dart' as _i9;
+import 'package:flutter/material.dart' as _i12;
 import 'package:flutter/material.dart';
-import 'package:geolocation/model/add_order_model.dart' as _i11;
+import 'package:geolocation/model/add_order_model.dart' as _i13;
 import 'package:geolocation/screens/geolocation/geolocation_view.dart' as _i5;
 import 'package:geolocation/screens/home_screen/home_page.dart' as _i3;
+import 'package:geolocation/screens/lead_screen/add_lead_screen/add_lead_screen.dart'
+    as _i10;
+import 'package:geolocation/screens/lead_screen/lead_list/lead_screen.dart'
+    as _i9;
+import 'package:geolocation/screens/lead_screen/update_screen/update_screen.dart'
+    as _i11;
 import 'package:geolocation/screens/login/login_view.dart' as _i4;
 import 'package:geolocation/screens/sales_order/add_sales_order/add_order_screen.dart'
     as _i7;
@@ -20,7 +25,7 @@ import 'package:geolocation/screens/sales_order/list_sales_order/list_sales_orde
     as _i6;
 import 'package:geolocation/screens/splash_screen/splash_screen.dart' as _i2;
 import 'package:stacked/stacked.dart' as _i1;
-import 'package:stacked_services/stacked_services.dart' as _i12;
+import 'package:stacked_services/stacked_services.dart' as _i14;
 
 class Routes {
   static const splashScreen = '/';
@@ -37,6 +42,12 @@ class Routes {
 
   static const itemScreen = '/item-screen';
 
+  static const leadListScreen = '/lead-list-screen';
+
+  static const addLeadScreen = '/add-lead-screen';
+
+  static const updateLeadScreen = '/update-lead-screen';
+
   static const all = <String>{
     splashScreen,
     homePage,
@@ -45,6 +56,9 @@ class Routes {
     listOrderScreen,
     addOrderScreen,
     itemScreen,
+    leadListScreen,
+    addLeadScreen,
+    updateLeadScreen,
   };
 }
 
@@ -78,42 +92,54 @@ class StackedRouter extends _i1.RouterBase {
       Routes.itemScreen,
       page: _i8.ItemScreen,
     ),
+    _i1.RouteDef(
+      Routes.leadListScreen,
+      page: _i9.LeadListScreen,
+    ),
+    _i1.RouteDef(
+      Routes.addLeadScreen,
+      page: _i10.AddLeadScreen,
+    ),
+    _i1.RouteDef(
+      Routes.updateLeadScreen,
+      page: _i11.UpdateLeadScreen,
+    ),
   ];
 
   final _pagesMap = <Type, _i1.StackedRouteFactory>{
     _i2.SplashScreen: (data) {
-      return _i9.MaterialPageRoute<dynamic>(
+      return _i12.MaterialPageRoute<dynamic>(
         builder: (context) => const _i2.SplashScreen(),
         settings: data,
       );
     },
     _i3.HomePage: (data) {
-      return _i9.MaterialPageRoute<dynamic>(
+      return _i12.MaterialPageRoute<dynamic>(
         builder: (context) => const _i3.HomePage(),
         settings: data,
       );
     },
     _i4.LoginViewScreen: (data) {
-      return _i9.MaterialPageRoute<dynamic>(
+      return _i12.MaterialPageRoute<dynamic>(
         builder: (context) => const _i4.LoginViewScreen(),
         settings: data,
       );
     },
     _i5.Geolocation: (data) {
-      return _i9.MaterialPageRoute<dynamic>(
+      return _i12.MaterialPageRoute<dynamic>(
         builder: (context) => const _i5.Geolocation(),
         settings: data,
       );
     },
     _i6.ListOrderScreen: (data) {
-      return _i9.MaterialPageRoute<dynamic>(
+      return _i12.MaterialPageRoute<dynamic>(
         builder: (context) => const _i6.ListOrderScreen(),
         settings: data,
       );
     },
     _i7.AddOrderScreen: (data) {
       final args = data.getArgs<AddOrderScreenArguments>(nullOk: false);
-      return _i9.MaterialPageRoute<dynamic>(
+      return _i12.MaterialPageRoute<dynamic>(
         builder: (context) =>
             _i7.AddOrderScreen(key: args.key, orderid: args.orderid),
         settings: data,
@@ -121,9 +147,31 @@ class StackedRouter extends _i1.RouterBase {
     },
     _i8.ItemScreen: (data) {
       final args = data.getArgs<ItemScreenArguments>(nullOk: false);
-      return _i9.MaterialPageRoute<dynamic>(
+      return _i12.MaterialPageRoute<dynamic>(
         builder: (context) => _i8.ItemScreen(
             key: args.key, warehouse: args.warehouse, items: args.items),
+        settings: data,
+      );
+    },
+    _i9.LeadListScreen: (data) {
+      return _i12.MaterialPageRoute<dynamic>(
+        builder: (context) => const _i9.LeadListScreen(),
+        settings: data,
+      );
+    },
+    _i10.AddLeadScreen: (data) {
+      final args = data.getArgs<AddLeadScreenArguments>(nullOk: false);
+      return _i12.MaterialPageRoute<dynamic>(
+        builder: (context) =>
+            _i10.AddLeadScreen(key: args.key, leadid: args.leadid),
+        settings: data,
+      );
+    },
+    _i11.UpdateLeadScreen: (data) {
+      final args = data.getArgs<UpdateLeadScreenArguments>(nullOk: false);
+      return _i12.MaterialPageRoute<dynamic>(
+        builder: (context) =>
+            _i11.UpdateLeadScreen(key: args.key, updateId: args.updateId),
         settings: data,
       );
     },
@@ -142,7 +190,7 @@ class AddOrderScreenArguments {
     required this.orderid,
   });
 
-  final _i10.Key? key;
+  final _i12.Key? key;
 
   final String orderid;
 
@@ -170,11 +218,11 @@ class ItemScreenArguments {
     required this.items,
   });
 
-  final _i10.Key? key;
+  final _i12.Key? key;
 
   final String warehouse;
 
-  final List<_i11.Items> items;
+  final List<_i13.Items> items;
 
   @override
   String toString() {
@@ -195,7 +243,61 @@ class ItemScreenArguments {
   }
 }
 
-extension NavigatorStateExtension on _i12.NavigationService {
+class AddLeadScreenArguments {
+  const AddLeadScreenArguments({
+    this.key,
+    required this.leadid,
+  });
+
+  final _i12.Key? key;
+
+  final String leadid;
+
+  @override
+  String toString() {
+    return '{"key": "$key", "leadid": "$leadid"}';
+  }
+
+  @override
+  bool operator ==(covariant AddLeadScreenArguments other) {
+    if (identical(this, other)) return true;
+    return other.key == key && other.leadid == leadid;
+  }
+
+  @override
+  int get hashCode {
+    return key.hashCode ^ leadid.hashCode;
+  }
+}
+
+class UpdateLeadScreenArguments {
+  const UpdateLeadScreenArguments({
+    this.key,
+    required this.updateId,
+  });
+
+  final _i12.Key? key;
+
+  final String updateId;
+
+  @override
+  String toString() {
+    return '{"key": "$key", "updateId": "$updateId"}';
+  }
+
+  @override
+  bool operator ==(covariant UpdateLeadScreenArguments other) {
+    if (identical(this, other)) return true;
+    return other.key == key && other.updateId == updateId;
+  }
+
+  @override
+  int get hashCode {
+    return key.hashCode ^ updateId.hashCode;
+  }
+}
+
+extension NavigatorStateExtension on _i14.NavigationService {
   Future<dynamic> navigateToSplashScreen([
     int? routerId,
     bool preventDuplicates = true,
@@ -267,7 +369,7 @@ extension NavigatorStateExtension on _i12.NavigationService {
   }
 
   Future<dynamic> navigateToAddOrderScreen({
-    _i10.Key? key,
+    _i12.Key? key,
     required String orderid,
     int? routerId,
     bool preventDuplicates = true,
@@ -284,9 +386,9 @@ extension NavigatorStateExtension on _i12.NavigationService {
   }
 
   Future<dynamic> navigateToItemScreen({
-    _i10.Key? key,
+    _i12.Key? key,
     required String warehouse,
-    required List<_i11.Items> items,
+    required List<_i13.Items> items,
     int? routerId,
     bool preventDuplicates = true,
     Map<String, String>? parameters,
@@ -296,6 +398,54 @@ extension NavigatorStateExtension on _i12.NavigationService {
     return navigateTo<dynamic>(Routes.itemScreen,
         arguments:
             ItemScreenArguments(key: key, warehouse: warehouse, items: items),
+        id: routerId,
+        preventDuplicates: preventDuplicates,
+        parameters: parameters,
+        transition: transition);
+  }
+
+  Future<dynamic> navigateToLeadListScreen([
+    int? routerId,
+    bool preventDuplicates = true,
+    Map<String, String>? parameters,
+    Widget Function(BuildContext, Animation<double>, Animation<double>, Widget)?
+        transition,
+  ]) async {
+    return navigateTo<dynamic>(Routes.leadListScreen,
+        id: routerId,
+        preventDuplicates: preventDuplicates,
+        parameters: parameters,
+        transition: transition);
+  }
+
+  Future<dynamic> navigateToAddLeadScreen({
+    _i12.Key? key,
+    required String leadid,
+    int? routerId,
+    bool preventDuplicates = true,
+    Map<String, String>? parameters,
+    Widget Function(BuildContext, Animation<double>, Animation<double>, Widget)?
+        transition,
+  }) async {
+    return navigateTo<dynamic>(Routes.addLeadScreen,
+        arguments: AddLeadScreenArguments(key: key, leadid: leadid),
+        id: routerId,
+        preventDuplicates: preventDuplicates,
+        parameters: parameters,
+        transition: transition);
+  }
+
+  Future<dynamic> navigateToUpdateLeadScreen({
+    _i12.Key? key,
+    required String updateId,
+    int? routerId,
+    bool preventDuplicates = true,
+    Map<String, String>? parameters,
+    Widget Function(BuildContext, Animation<double>, Animation<double>, Widget)?
+        transition,
+  }) async {
+    return navigateTo<dynamic>(Routes.updateLeadScreen,
+        arguments: UpdateLeadScreenArguments(key: key, updateId: updateId),
         id: routerId,
         preventDuplicates: preventDuplicates,
         parameters: parameters,
@@ -373,7 +523,7 @@ extension NavigatorStateExtension on _i12.NavigationService {
   }
 
   Future<dynamic> replaceWithAddOrderScreen({
-    _i10.Key? key,
+    _i12.Key? key,
     required String orderid,
     int? routerId,
     bool preventDuplicates = true,
@@ -390,9 +540,9 @@ extension NavigatorStateExtension on _i12.NavigationService {
   }
 
   Future<dynamic> replaceWithItemScreen({
-    _i10.Key? key,
+    _i12.Key? key,
     required String warehouse,
-    required List<_i11.Items> items,
+    required List<_i13.Items> items,
     int? routerId,
     bool preventDuplicates = true,
     Map<String, String>? parameters,
@@ -402,6 +552,54 @@ extension NavigatorStateExtension on _i12.NavigationService {
     return replaceWith<dynamic>(Routes.itemScreen,
         arguments:
             ItemScreenArguments(key: key, warehouse: warehouse, items: items),
+        id: routerId,
+        preventDuplicates: preventDuplicates,
+        parameters: parameters,
+        transition: transition);
+  }
+
+  Future<dynamic> replaceWithLeadListScreen([
+    int? routerId,
+    bool preventDuplicates = true,
+    Map<String, String>? parameters,
+    Widget Function(BuildContext, Animation<double>, Animation<double>, Widget)?
+        transition,
+  ]) async {
+    return replaceWith<dynamic>(Routes.leadListScreen,
+        id: routerId,
+        preventDuplicates: preventDuplicates,
+        parameters: parameters,
+        transition: transition);
+  }
+
+  Future<dynamic> replaceWithAddLeadScreen({
+    _i12.Key? key,
+    required String leadid,
+    int? routerId,
+    bool preventDuplicates = true,
+    Map<String, String>? parameters,
+    Widget Function(BuildContext, Animation<double>, Animation<double>, Widget)?
+        transition,
+  }) async {
+    return replaceWith<dynamic>(Routes.addLeadScreen,
+        arguments: AddLeadScreenArguments(key: key, leadid: leadid),
+        id: routerId,
+        preventDuplicates: preventDuplicates,
+        parameters: parameters,
+        transition: transition);
+  }
+
+  Future<dynamic> replaceWithUpdateLeadScreen({
+    _i12.Key? key,
+    required String updateId,
+    int? routerId,
+    bool preventDuplicates = true,
+    Map<String, String>? parameters,
+    Widget Function(BuildContext, Animation<double>, Animation<double>, Widget)?
+        transition,
+  }) async {
+    return replaceWith<dynamic>(Routes.updateLeadScreen,
+        arguments: UpdateLeadScreenArguments(key: key, updateId: updateId),
         id: routerId,
         preventDuplicates: preventDuplicates,
         parameters: parameters,

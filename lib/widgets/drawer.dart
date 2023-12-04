@@ -69,6 +69,17 @@ Widget myDrawer(BuildContext context, String name, String email, String role) {
               Navigator.pushReplacementNamed(context, Routes.listOrderScreen);
             },
           ),
+          //  ListTile(
+          //   leading:
+          //       const Icon(FontAwesome.cart_arrow_down, color: Colors.black),
+          //   title: const Text(
+          //     'Lead',
+          //     style: TextStyle(fontWeight: FontWeight.w300),
+          //   ),
+          //   onTap: () {
+          //     Navigator.pushReplacementNamed(context, Routes.leadListScreen);
+          //   },
+          // ),
           const Divider(thickness: 1),
           ListTile(
             leading: const Icon(Iconsax.logout, color: Colors.black),
