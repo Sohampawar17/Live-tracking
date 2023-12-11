@@ -24,8 +24,10 @@ class _AddLeadScreenState extends State<AddLeadScreen> {
       onViewModelReady: (model) => model.initialise(context,widget.leadid),
       builder: (context, model, child)=>Scaffold(
        
-      appBar:AppBar(title:  Text(model.isEdit ?model.leaddata.name.toString() :'Create Lead'),backgroundColor: Colors.transparent,
-leading: IconButton.outlined(onPressed: ()=>Navigator.popAndPushNamed(context, Routes.homePage), icon: const Icon(Icons.arrow_back)),),
+      appBar:AppBar(title:  Text(model.isEdit ?model.leaddata.name.toString() :'Create Lead',style: TextStyle(fontSize: 18),),backgroundColor: Colors.transparent,
+leading: IconButton.outlined(onPressed: ()=>Navigator.popAndPushNamed(context, Routes.homePage), icon: const Icon(Icons.arrow_back)),actions: [
+  IconButton.outlined(onPressed: ()=>model.onSavePressed(context), icon: const Icon(Icons.check))
+],),
     body: fullScreenLoader(
       loader: model.isBusy,context: context,
       child: SingleChildScrollView(
@@ -57,7 +59,7 @@ leading: IconButton.outlined(onPressed: ()=>Navigator.popAndPushNamed(context, R
                         
                           SizedBox(height: 15,),
               
-                  CustomDropdownButton2(labelText: 'Territory',value: model.leaddata.territory,prefixIcon:Icons.location_city_sharp,searchInnerWidgetHeight: 35,items:model.territory, hintText: 'select territory', onChanged: model.setterritory,),
+                  CustomDropdownButton2(labelText: 'Territory',value: model.leaddata.territory,prefixIcon:Icons.location_on,searchInnerWidgetHeight: 35,items:model.territory, hintText: 'select territory', onChanged: model.setterritory,),
                   
                             SizedBox(height: 15,),
                              CustomSmallTextFormField(prefixIcon: Icons.factory_outlined,controller: model.companynamecontroller,labelText:'Organisation Name' ,hintText: 'Enter the organisation',onChanged: model.setCompanyName,validator: model.validatecompany,),
@@ -71,12 +73,12 @@ leading: IconButton.outlined(onPressed: ()=>Navigator.popAndPushNamed(context, R
                 
               ),
  SizedBox(width: 15,),
-   Expanded(child:  CustomSmallTextFormField(prefixIcon: Icons.location_on,controller: model.statecontroller,labelText:'State' ,hintText: 'Enter the State',onChanged: model.setstate,validator: model.validatestate,),
+   Expanded(child:   CustomDropdownButton2(labelText: 'State',value:model.leaddata.state..toString,items:model.state, hintText: 'select state', onChanged: model.setstate,searchController: model.statecontroller,),
    )
                 ],),
                  SizedBox(height: 15,),
-                   
-            CustomSmallTextFormField(linelength: 5,prefixIcon:Icons.note_add,controller: model.noteController,labelText:'+ Add Note' ,hintText: 'Enter your Note',onChanged: model.setNote),
+                 
+            Visibility(visible: !model.isEdit,child: CustomSmallTextFormField(linelength: 5,prefixIcon:Icons.note_add,controller: model.noteController,labelText:'+ Add Note' ,hintText: 'Enter your Note',onChanged: model.setNote)),
                 
                        
                           SizedBox(height: 25,),

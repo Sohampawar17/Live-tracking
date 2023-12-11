@@ -37,7 +37,7 @@ class UpdateLeadServices{
       }
     } on DioException catch (e) {
       Fluttertoast.showToast(gravity:ToastGravity.BOTTOM,msg: 'Error: ${e.response!.data["exception"].toString().split(":").elementAt(1).trim()} ',textColor:Color(0xFFFFFFFF),backgroundColor: Color(0xFFBA1A1A),);
-      Logger().e(e);
+      Logger().e(e.response!.data["exception"].toString());
     }
     return [];
   }
@@ -46,7 +46,7 @@ class UpdateLeadServices{
   
     Future<bool> deletenotes(String leadname,int index) async {
     baseurl =  await geturl();
-    var data = {'doc_name': leadname,'row_id':index};
+    var data = {'doc_name': leadname,'row_id':index.toString()};
 
     try {
       var dio = Dio();
@@ -60,21 +60,23 @@ class UpdateLeadServices{
       );
 
       if (response.statusCode == 200) {
-   await UpdateLeadServices().getnotes(leadname);
+   
+   Logger().i(response.data["data"].toString());
+   Fluttertoast.showToast(msg: response.data["message"].toString());
         return true;
       } else {
         Fluttertoast.showToast(msg: "UNABLE TO delete notes!");
         return false;
       }
     } on DioException catch (e) {
-      Fluttertoast.showToast(gravity:ToastGravity.BOTTOM,msg: 'Error: ${e.response!.data["exception"].toString().split(":").elementAt(1).trim()} ',textColor:Color(0xFFFFFFFF),backgroundColor: Color(0xFFBA1A1A),);
+      Fluttertoast.showToast(gravity:ToastGravity.BOTTOM,msg: 'Error: ${e.response!.data["message"].toString().split(":").elementAt(1).trim()} ',textColor:Color(0xFFFFFFFF),backgroundColor: Color(0xFFBA1A1A),);
       Logger().e(e);
     }
     return false;
   }
 
   
-    Future<bool> addnotes(String leadname,String note) async {
+    Future<bool> addnotes(String leadname,dynamic note) async {
     baseurl =  await geturl();
     var data = {'doc_name': leadname,'note':note};
 
@@ -90,7 +92,7 @@ class UpdateLeadServices{
       );
 
       if (response.statusCode == 200) {
-  await UpdateLeadServices().getnotes(leadname);
+    Logger().i(response.data["message"]);
         return true;
       } else {
         Fluttertoast.showToast(msg: "UNABLE TO add notes!");
@@ -119,7 +121,7 @@ class UpdateLeadServices{
       );
 
       if (response.statusCode == 200) {
-  
+   Logger().i(response.data["data"].toString());
         return true;
       } else {
         Fluttertoast.showToast(msg: "UNABLE TO change status!");

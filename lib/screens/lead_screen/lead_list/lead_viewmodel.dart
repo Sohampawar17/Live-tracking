@@ -15,6 +15,11 @@ notifyListeners();
 setBusy(false);
   }
 
+Future<void> refresh() async {
+  leadlist=await ListLeadServices().fetchleadlist();
+  notifyListeners();
+}
+
  void onRowClick(BuildContext context, ListLeadModel? leadList) {
     Navigator.pushNamed(
       context,

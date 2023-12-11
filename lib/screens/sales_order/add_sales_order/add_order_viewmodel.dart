@@ -21,7 +21,8 @@ class AddOrderViewModel extends BaseViewModel {
   bool res = false;
   bool isEdit = false;
   bool isloading = false;
-  List<String> ordetype = ["", "Sales", "Maintenance", "Shopping Cart"];
+  
+  List<String> ordetype = ["Sales", "Maintenance", "Shopping Cart"];
   TextEditingController customercontroller = TextEditingController();
   TextEditingController searchcustomercontroller = TextEditingController();
   TextEditingController deliverydatecontroller = TextEditingController();
@@ -86,7 +87,7 @@ class AddOrderViewModel extends BaseViewModel {
       context: context,
       initialDate: selecteddeliveryDate ?? DateTime.now(),
       firstDate: DateTime.now(),
-      lastDate: DateTime(2050),
+      lastDate: DateTime(2100),
     );
 
     if (picked != null && picked != selecteddeliveryDate) {

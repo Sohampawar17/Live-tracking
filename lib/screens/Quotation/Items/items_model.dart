@@ -1,42 +1,33 @@
 import 'package:flutter/cupertino.dart';
-import 'package:geolocation/model/add_order_model.dart';
+import 'package:geolocation/services/add_quotation_services.dart';
 import 'package:logger/logger.dart';
 import 'package:stacked/stacked.dart';
 
-import '../../../services/add_order_services.dart';
+import '../../../model/addquotation_model.dart';
 
-class ItemListModel extends BaseViewModel {
+
+
+class QuotationItemListModel extends BaseViewModel {
   List<Items> selecteditems = [];
   List<Items> isSelecteditems = [];
   double quantity = 0.0;
   final TextEditingController searchController = TextEditingController();
   List<Items> get selectedItems => selecteditems;
-
+  List<Items> filteredItems = [];
   bool isSelected(Items item) {
     return isSelecteditems.contains(item);
   }
-  List<Items> filteredItems = [];
 
   void initialise(
-      BuildContext context, String warehouse, List<Items> itemlist) async {
+      BuildContext context,  List<Items> itemlist) async {
     setBusy(true);
     Logger().i(itemlist.length);
-    // isSelecteditems = itemlist;
-  // isSelecteditems.clear(); // Clear the list before adding items
-    selecteditems = await AddOrderServices().fetchitems(warehouse);
-   filteredItems=selectedItems;
-   
+    isSelecteditems = itemlist;
+    isSelecteditems.clear(); // Clear the list before adding items
+    selecteditems = await AddQuotationServices().fetchitems();
+    filteredItems=selectedItems;
     notifyListeners();
     setBusy(false);
-  }
-
-
-  void searchItems(String query) {
-    filteredItems = selecteditems
-        .where((item) =>
-        item.itemName.toString().toLowerCase().contains(query.toLowerCase()))
-        .toList();
-    notifyListeners();
   }
 
   void toggleSelection(Items item) {
@@ -53,11 +44,20 @@ class ItemListModel extends BaseViewModel {
   void additem(int index) {
     quantity++;
     selecteditems[index].qty =
-        quantity.toDouble(); // or just quantity.toDouble()
+        quantity.toDouble() as double?; // or just quantity.toDouble()
     notifyListeners();
   }
 
-  double getQuantity(Items item) {
+
+  void searchItems(String query) {
+    filteredItems = selecteditems
+        .where((item) =>
+        item.itemName.toString().toLowerCase().contains(query.toLowerCase()))
+        .toList();
+    notifyListeners();
+  }
+
+  num getQuantity(Items item) {
     return item.qty ?? 0.0;
   }
 
@@ -65,7 +65,7 @@ class ItemListModel extends BaseViewModel {
     if (quantity > 0) {
       quantity--;
       selecteditems[index].qty =
-          quantity.toDouble(); // or just quantity.toDouble()
+          quantity.toDouble() as double?; // or just quantity.toDouble()
       notifyListeners();
     }
   }

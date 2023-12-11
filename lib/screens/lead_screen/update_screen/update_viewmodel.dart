@@ -35,19 +35,30 @@ List<NotesList> notes=[];
     setBusy(false);
   }
 
-void deletenote(String? lead,int index)async{
-  if(lead!.isNotEmpty){
- await UpdateLeadServices().deletenotes(lead, index);
-  notifyListeners();
+void deletenote(String? lead,int? index)async{
+  Logger().i(lead);
+  Logger().i(index);
+  if(lead!.isNotEmpty && index!.bitLength != 0){
+    // notes.removeAt(index);
+ res=await UpdateLeadServices().deletenotes(lead, index);
+ if(res){
+  notes=await UpdateLeadServices().getnotes(lead);
+  
+ }
 }
+ notifyListeners();
 }
 
-void addnote(String? lead,String? note)async{
+void addnote(String? lead,dynamic note)async{
+    Logger().i(lead);
+  Logger().i(note);
   if(lead!.isNotEmpty && note!.isNotEmpty){
- await UpdateLeadServices().addnotes(lead, note);}
-  notifyListeners();
-  
+ res=await UpdateLeadServices().addnotes(lead, note);}
+  if(res){
+  notes=await UpdateLeadServices().getnotes(lead);
+ }
 controller.clear();
+notifyListeners();
 }
 
 

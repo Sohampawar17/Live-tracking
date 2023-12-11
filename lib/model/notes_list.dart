@@ -1,21 +1,27 @@
 class NotesList {
-  List<String>? note;
+  int? name;
+  String? note;
   String? commented;
-  String? creation;
+  String? addedOn;
+  String? image;
 
-  NotesList({this.note, this.commented, this.creation});
+  NotesList({this.name, this.note, this.commented, this.addedOn, this.image});
 
   NotesList.fromJson(Map<String, dynamic> json) {
-    note = json['note'].cast<String>();
+    name = json['name'];
+    note = json['note'];
     commented = json['commented'];
-    creation = json['creation'];
+    addedOn = json['added_on'];
+    image = json['image'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['name'] = this.name;
     data['note'] = this.note;
     data['commented'] = this.commented;
-    data['creation'] = this.creation;
+    data['added_on'] = this.addedOn;
+    data['image'] = this.image;
     return data;
   }
 }

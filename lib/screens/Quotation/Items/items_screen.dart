@@ -1,23 +1,26 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:geolocation/widgets/customtextfield.dart';
-import 'package:geolocation/widgets/full_screen_loader.dart';
 import 'package:stacked/stacked.dart';
+
 import '../../../constants.dart';
-import '../../../model/add_order_model.dart';
-import 'add_item_model.dart';
+import '../../../model/addquotation_model.dart';
+import '../../../widgets/customtextfield.dart';
+import '../../../widgets/full_screen_loader.dart';
+import 'items_model.dart';
 
-class ItemScreen extends StatelessWidget {
-  final String warehouse;
+
+
+class QuotationItemScreen extends StatelessWidget {
+
   final List<Items> items;
-
-  const ItemScreen({super.key, required this.warehouse, required this.items});
+  const QuotationItemScreen({super.key, required this.items});
 
   @override
   Widget build(BuildContext context) {
-    return ViewModelBuilder<ItemListModel>.reactive(
-      viewModelBuilder: () => ItemListModel(),
-      onViewModelReady: (model) => model.initialise(context, warehouse, items),
+    return ViewModelBuilder<QuotationItemListModel>.reactive(
+      viewModelBuilder: () => QuotationItemListModel(),
+      onViewModelReady: (model) => model.initialise(context, items),
       builder: (context, model, child) => Scaffold(
           appBar: AppBar(
             title: const Text('Select Items'),
@@ -26,21 +29,19 @@ class ItemScreen extends StatelessWidget {
             loader: model.isBusy,
             context: context,
             child: SingleChildScrollView(
-              padding: EdgeInsets.all(12),
+              padding: EdgeInsets.all(8),
               scrollDirection: Axis.vertical,
               child: Column(
-                mainAxisSize: MainAxisSize.min,
                 children: [
-                  CustomSmallTextFormField(controller: model.searchController, labelText: 'Search', hintText: 'Type here to search',onChanged: model.searchItems,), ListView.separated(
-                  physics: const NeverScrollableScrollPhysics(),
-                  scrollDirection: Axis.vertical,
-                  shrinkWrap: true,
-                  itemCount: model.filteredItems.length,
-                  itemBuilder: (context, index) {
-                    final selectedItem = model.filteredItems[index];
-                    return Container(
-                      height: 135,
-                      child: ListTile(
+                  CustomSmallTextFormField(controller: model.searchController, labelText: 'Search', hintText: 'Type here to search',onChanged: model.searchItems,),
+                  ListView.separated(
+                    physics: const NeverScrollableScrollPhysics(),
+                    scrollDirection: Axis.vertical,
+                    shrinkWrap: true,
+                    itemCount: model.filteredItems.length,
+                    itemBuilder: (context, index) {
+                      final selectedItem = model.filteredItems[index];
+                      return ListTile(
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(15.0),
                         ),
@@ -71,53 +72,53 @@ class ItemScreen extends StatelessWidget {
                         ),
                         title: Column(
                           mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'ID: ${selectedItem.itemCode} (${selectedItem.itemName})',
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16.0,
-                            ),
-                          ),
-                          const SizedBox(height: 4), // Adjust the height as needed
-                          Row(
-                            children: [
-                              const AutoSizeText('Quantity:'),
-                              IconButton(
-                                icon: const Icon(Icons.remove_circle),
-                                onPressed: () {
-                                  if (selectedItem.qty != null && (selectedItem.qty ?? 0.0) > 0.0) {
-                                    model.removeitem(index);
-                                  }
-                                },
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'ID: ${selectedItem.itemCode} (${selectedItem.itemName})',
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16.0,
                               ),
-                              AutoSizeText(
-                                model.getQuantity(selectedItem).toString(),
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
+                            ),
+                            const SizedBox(height: 4), // Adjust the height as needed
+                            Row(
+                              children: [
+                                const AutoSizeText('Quantity:'),
+                                IconButton(
+                                  icon: const Icon(Icons.remove_circle),
+                                  onPressed: () {
+                                    if (selectedItem.qty != null && (selectedItem.qty ?? 0.0) > 0.0) {
+                                      model.removeitem(index);
+                                    }
+                                  },
                                 ),
-                              ),
-                              IconButton(
-                                icon: const Icon(Icons.add_circle),
-                                onPressed: () {
-                                  model.additem(index);
-                                },
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 4), // Adjust the height as needed
-                          AutoSizeText(
-                            'Actual Quantity: ${selectedItem.actualQty}',
-                            style: const TextStyle(
-                              fontStyle: FontStyle.italic,
-                              color: Colors.grey,
+                                AutoSizeText(
+                                  model.getQuantity(selectedItem).toString(),
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                IconButton(
+                                  icon: const Icon(Icons.add_circle),
+                                  onPressed: () {
+                                    model.additem(index);
+                                  },
+                                ),
+                              ],
                             ),
-                          ),
-                        ],
-                      ),
+                            const SizedBox(height: 4), // Adjust the height as needed
+                            AutoSizeText(
+                              'Actual Quantity: ${selectedItem.actualQty}',
+                              style: const TextStyle(
+                                fontStyle: FontStyle.italic,
+                                color: Colors.grey,
+                              ),
+                            ),
+                          ],
+                        ),
 
-                      trailing: GestureDetector(
+                        trailing: GestureDetector(
                           onTap: () {
                             // Handle chip tap
                             model.toggleSelection(selectedItem);
@@ -127,11 +128,11 @@ class ItemScreen extends StatelessWidget {
                             color: model.isSelected(selectedItem) ? Colors.green : Colors.grey,
                           ),
                         ),
-                      ),
-                    );
-                  }, separatorBuilder: (BuildContext context, int index) { return const Divider(thickness: 1,); },
+                      );
+                    }, separatorBuilder: (BuildContext context, int index) { return const Divider(thickness: 1,); },
 
-                )],
+                  ),
+                ],
               ),
             ),
           ),
@@ -175,7 +176,7 @@ class ItemScreen extends StatelessWidget {
 }
 
 class BottomSheetWidget extends StatefulWidget {
-  final ItemListModel model;
+  final QuotationItemListModel model;
 
   const BottomSheetWidget({Key? key, required this.model}) : super(key: key);
 
@@ -228,5 +229,6 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget> {
         ],
       ),
     );
+
   }
 }

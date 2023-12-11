@@ -1,5 +1,6 @@
 
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocation/screens/lead_screen/update_screen/update_viewmodel.dart';
@@ -25,20 +26,23 @@ class _UpdateLeadScreenState extends State<UpdateLeadScreen> {
       viewModelBuilder: () => UpdateLeadModel(),
       onViewModelReady: (model) => model.initialise(context,widget.updateId),
       builder: (context, model, child)=> Scaffold(
-appBar: AppBar(title:  Text(model.leaddata.name ?? ""),
+appBar: AppBar(title:  Text(model.leaddata.name ?? "",style: const TextStyle(fontSize: 18),),
 actions: [IconButton(onPressed: ()=>Navigator.popAndPushNamed(context, Routes.addLeadScreen,arguments: AddLeadScreenArguments(leadid: widget.updateId)), icon:const Icon(Icons.edit) ),],
-leading: IconButton.outlined(onPressed: ()=>Navigator.popAndPushNamed(context, Routes.homePage), icon: const Icon(Icons.arrow_back)),),
+leading: IconButton.outlined(onPressed: ()=>Navigator.popAndPushNamed(context, Routes.leadListScreen), icon: const Icon(Icons.arrow_back)),),
 body: fullScreenLoader(
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: SingleChildScrollView(
+                    physics: const AlwaysScrollableScrollPhysics(),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                        Row(
+                       
                         children: [
-                          Expanded(child: AutoSizeText(model.leaddata.name ?? "")),
+                          Expanded(flex: 3,child: AutoSizeText(model.leaddata.name ?? ""),),
                           Expanded(
+                            flex: 2,
                             child: DropdownButtonHideUnderline(
                                     child: CdropDown(dropdownButton: DropdownButton2<String>(
                                       isExpanded: true,
@@ -111,26 +115,27 @@ body: fullScreenLoader(
                                itemCount: model.notes.length,
                                itemBuilder: (context, index) {
                                  final noteData = model.notes[index];
-                                 return ListTile(
-  leading: const CircleAvatar(
-    backgroundColor: Colors.blue,
-    child: Icon(Icons.person_2_outlined),
+                                 return  ListTile(
+  leading:   CircleAvatar(
+    foregroundColor: Colors.blue,
+    foregroundImage:  CachedNetworkImageProvider(
+                  '${noteData.image}',
+                ),
   ),
   title: Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
-      Text(noteData.commented ?? ''),
-       Text(noteData.creation ?? ''),
+      Text(noteData.commented ?? '',style: const TextStyle(fontSize: 12),),
     ],
   ),
-  subtitle: Text(noteData.note!.join('\n')),
+  subtitle: Text(noteData.note ?? "",style: const TextStyle(fontSize: 15),),
   trailing: Column(
     mainAxisAlignment: MainAxisAlignment.spaceBetween,
     children: [
-      Expanded(child:  Text(noteData.creation ?? "")),
+      Expanded(child:  Text(noteData.addedOn ?? "")),
       Expanded(
         child: IconButton(
-          onPressed: () {model.deletenote(model.leaddata.name,index);
+          onPressed: () {model.deletenote(widget.updateId,noteData.name);
            }, // Implement edit functionality
           icon: const Icon(Icons.delete),
         ), 

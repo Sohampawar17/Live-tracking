@@ -1,5 +1,6 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocation/services/add_order_services.dart';
+import 'package:intl/intl.dart';
 import 'package:stacked/stacked.dart';
 import '../../../model/order_list_model.dart';
 import '../../../router.router.dart';
@@ -7,10 +8,16 @@ import '../../../services/order_services.dart';
 
 class ListOrderModel extends BaseViewModel {
   List<OrderList> orderlist = [];
+  List<OrderList> filterorderlist = [];
+  List<String> searchcutomer = [""];
+
 
   initialise(BuildContext context) async {
     setBusy(true);
     orderlist = await OrderServices().fetchsalesorder();
+    searchcutomer = await AddOrderServices().fetchcustomer();
+   filterorderlist=orderlist;
+
     setBusy(false);
   }
 
@@ -21,6 +28,26 @@ class ListOrderModel extends BaseViewModel {
       arguments: AddOrderScreenArguments(orderid: farmresList?.name ?? ""),
     );
   }
+   DateTime? selecteddeliveryDate;
+
+ Future<void> selectdeliveryDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: selecteddeliveryDate ?? DateTime.now(),
+      firstDate: DateTime(1900),
+      lastDate: DateTime(2100),
+    );
+
+    if (picked != null && picked != selecteddeliveryDate) {
+      selecteddeliveryDate = picked;
+      date = DateFormat('yyyy-MM-dd').format(picked);
+    }
+  }
+
+Future<void> refresh() async {
+  orderlist= await OrderServices().fetchsalesorder();
+  notifyListeners();
+}
 
   Color getColorForStatus(String status) {
     switch (status) {
@@ -46,4 +73,26 @@ class ListOrderModel extends BaseViewModel {
         return Colors.grey; // Set a default color for unknown status
     }
   }
+
+ String? custm;
+String? date;
+
+  void setcustomer(String? customer) {
+  custm = customer ?? "";
+    notifyListeners();
+  }
+
+  void setfilter(String customer,String date) async {
+
+   filterorderlist= await OrderServices().filterfetchSalesOrder(customer, date);
+   notifyListeners();
+  }
+
+  void clearfilter() async {
+ date="";
+   custm="";
+    filterorderlist= await OrderServices().fetchsalesorder();
+    notifyListeners();
+  }
+
 }

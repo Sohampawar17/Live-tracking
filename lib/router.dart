@@ -1,3 +1,6 @@
+import 'package:geolocation/screens/Quotation/Add%20Quotation/add_quotation_screen.dart';
+import 'package:geolocation/screens/Quotation/Items/items_screen.dart';
+import 'package:geolocation/screens/Quotation/List%20Quotation/list_quotation_view.dart';
 import 'package:geolocation/screens/geolocation/geolocation_view.dart';
 import 'package:geolocation/screens/home_screen/home_page.dart';
 import 'package:geolocation/screens/lead_screen/add_lead_screen/add_lead_screen.dart';
@@ -23,7 +26,10 @@ import 'screens/lead_screen/lead_list/lead_screen.dart';
     MaterialRoute(page: ItemScreen),
     MaterialRoute(page: LeadListScreen),
     MaterialRoute(page: AddLeadScreen),
-    MaterialRoute(page: UpdateLeadScreen)
+    MaterialRoute(page: UpdateLeadScreen),
+    MaterialRoute(page: AddQuotationView),
+    MaterialRoute(page: ListQuotationScreen),
+    MaterialRoute(page: QuotationItemScreen)
 
     // DetailedFarmerScreen
   ],

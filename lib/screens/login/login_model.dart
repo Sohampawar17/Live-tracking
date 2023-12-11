@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geolocation/constants.dart';
 import 'package:geolocation/services/login_services.dart';
 import 'package:logger/logger.dart';
@@ -35,12 +34,12 @@ class LoginViewModel extends BaseViewModel {
       }
     } else {
       Logger().i('invalid credential');
-      Fluttertoast.showToast(
-          msg: "Invalid Credentials",
-          toastLength: Toast.LENGTH_LONG,
-          backgroundColor: Colors.white,
-          textColor: Colors.black,
-          fontSize: 16.0);
+    //   Fluttertoast.showToast(
+    //       msg: "Invalid Credentials",
+    //       toastLength: Toast.LENGTH_LONG,
+    //       backgroundColor: Colors.white,
+    //       textColor: Colors.black,
+    //       fontSize: 16.0);
     }
   }
 

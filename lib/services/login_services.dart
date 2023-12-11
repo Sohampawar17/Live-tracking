@@ -1,4 +1,6 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:logger/logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -32,17 +34,15 @@ class loginservices {
         prefs.setString(
             "api_key", response.data["key_details"]["api_key"].toString());
         prefs.setString("user", response.data["user"].toString());
-        prefs.setString(
-            "role_profile", response.data["role_profile"].toString());
-        prefs.setString("employee_id", response.data["employee_id"].toString());
-        prefs.setString("full_name", response.data["full_name"].toString());
-        Logger().i('user Logged In');
+        Logger().i(prefs.getString('api_secret'));
+         Fluttertoast.showToast(gravity:ToastGravity.BOTTOM,msg: 'Logged in successfully',textColor:Color(0xFFFFFFFF),backgroundColor: Color.fromARGB(255, 26, 186, 82),);
         return true;
       } else {
         return false;
       }
-    } catch (e) {
-      Logger().e('Error occurred during login request: $e');
+    } on DioException catch (e) {
+       Fluttertoast.showToast(gravity:ToastGravity.BOTTOM,msg: 'Error: ${e.response!.data["message"].toString()} ',textColor:Color(0xFFFFFFFF),backgroundColor: Color(0xFFBA1A1A),);
+      Logger().e(e);
       return false;
     }
   }

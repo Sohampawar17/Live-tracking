@@ -1,9 +1,11 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocation/screens/sales_order/list_sales_order/list_sales_order_screen.dart';
 import 'package:geolocation/widgets/full_screen_loader.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:logger/logger.dart';
 import 'package:stacked/stacked.dart';
+import 'package:stacked/stacked_annotations.dart';
 import '../../../constants.dart';
 import '../../../model/add_order_model.dart';
 import '../../../router.router.dart';
@@ -32,12 +34,18 @@ class _AddOrderScreenState extends State<AddOrderScreen> {
           title: model.isEdit == true
               ? Text(model.orderdata.name ?? "")
               : const Text('Create Order'),
-          leading: IconButton(
+          leading: IconButton.outlined(
             onPressed: () {
               Navigator.popAndPushNamed(context, Routes.listOrderScreen);
             },
             icon: const Icon(Icons.arrow_back),
           ),
+          actions: [IconButton.outlined(
+            onPressed: () {
+              model.onSavePressed(context);
+            },
+            icon: const Icon(Icons.check),
+          ),],
         ),
         body: fullScreenLoader(
           loader: model.isBusy,
@@ -51,30 +59,16 @@ class _AddOrderScreenState extends State<AddOrderScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   CustomDropdownButton2(value: model.orderdata.customer,prefixIcon: Icons.person_2,items: model.searchcutomer, hintText: 'Select the customer', labelText: 'Customer', onChanged:  model.setcustomer,),
-        // SizedBox(
-        //   height: 60,
-        //   child: DropdownSearch<String>(
-        //       popupProps: const PopupProps.menu(
-        //         showSearchBox: true,
-        //   showSelectedItems: true,
-        //       ),
-        //       items:model.searchcutomer,
-        //       dropdownDecoratorProps:  DropDownDecoratorProps(
-        //   dropdownSearchDecoration: AppInputDecorations.textFieldDecoration(labelText: 'Customers', hintText: 'select the customers', prefixIcon: Icons.person_2_outlined),
-        //       ),
-        //       onChanged: model.setcustomer,
-        //       selectedItem: model.orderdata.customer,
-        //   ),
-        // ),
-                
+
                   const SizedBox(
                     height: 15,
                   ),
+                  
                   Row(
                     children: [
                       Expanded(
                         flex: 1,
-                        child:CustomDropdownButton2(items:model.ordetype, hintText: 'select the order type', onChanged: model.setordertype, labelText: 'Order Type',),
+                        child:CustomDropdownButton2(items:model.ordetype, hintText: 'select the order type', onChanged: model.setordertype, labelText: 'Order Type',value: model.orderdata.orderType,),
                       ),
                       const SizedBox(
                         width: 10,
@@ -130,8 +124,17 @@ class _AddOrderScreenState extends State<AddOrderScreen> {
                   ),
                   TextFormField(
                     readOnly: true,
-                  
+                  initialValue: '${model.orderdata.items?.length ?? 0} items are selected',
                     onTap: () async {
+                      if(model.orderdata.customer == null){
+                        const snackBar= SnackBar(
+                          backgroundColor: Colors.red,
+                          content: Text('Please select the customer',style: TextStyle(color: Colors.white,fontSize: 18),),
+                          duration: Duration(seconds: 3),
+                        );
+                        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                        return;
+                      }
                         final SelectedItems = await Navigator.pushNamed(
                           context,
                           Routes.itemScreen,
@@ -147,7 +150,7 @@ class _AddOrderScreenState extends State<AddOrderScreen> {
                         }
                     },
                      decoration: InputDecoration(
-       
+       suffixIcon: Icon(Icons.arrow_drop_down),
         contentPadding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 12.0),
         labelText: 'Items',
         hintText: 'For select items click here',
@@ -196,6 +199,7 @@ class _AddOrderScreenState extends State<AddOrderScreen> {
                               child: Column(
                                 children: [
                                   Row(
+                                    mainAxisSize: MainAxisSize.min,
                                     children: [
                                       AutoSizeText(
                                         'ID:  ${selectedItem.itemCode}',
@@ -217,7 +221,6 @@ class _AddOrderScreenState extends State<AddOrderScreen> {
                                           icon: const Icon(
                                               Icons.delete_outline_rounded))
                                     ],
-                                    mainAxisSize: MainAxisSize.min,
                                   ),
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.start,
@@ -289,7 +292,7 @@ class _AddOrderScreenState extends State<AddOrderScreen> {
                       children: [
                         CtextButton(
                           text: 'Cancel',
-                          onPressed: () => Navigator.of(context).pop(),
+                          onPressed: () => Navigator.pop(context,const MaterialRoute(page: ListOrderScreen)),
                         ),
                         TextButton(
                           onPressed: () => model.onSavePressed(context),

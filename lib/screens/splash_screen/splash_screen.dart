@@ -57,12 +57,12 @@ class _SplashScreenState extends State<SplashScreen> {
         child: Container(
           width: double.infinity,
           height: double.infinity,
-          decoration: const BoxDecoration(
-            color: Colors.white,
-            image: DecorationImage(
-                fit: BoxFit.fitWidth,
-                image: AssetImage('assets/images/13.jpg')),
-          ),
+          // decoration: const BoxDecoration(
+          //   color: Colors.white,
+          //   image: DecorationImage(
+          //       fit: BoxFit.fitWidth,
+          //       image: AssetImage('assets/images/erpdata.jpg')),
+          // ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             mainAxisSize: MainAxisSize.min,
