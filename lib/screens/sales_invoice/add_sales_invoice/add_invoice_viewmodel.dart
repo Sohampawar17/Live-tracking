@@ -1,50 +1,48 @@
 import 'package:flutter/material.dart';
+
 import 'package:geolocation/model/order_details_model.dart';
 import 'package:logger/logger.dart';
 import 'package:stacked/stacked.dart';
-import '../../../model/add_order_model.dart';
+import '../../../model/add_invoice_model.dart';
 import '../../../router.router.dart';
-import '../../../services/add_order_services.dart';
+import '../../../services/add_invoice_services.dart';
 import 'package:intl/intl.dart';
 
-class AddOrderViewModel extends BaseViewModel {
+class AddInvoiceViewModel extends BaseViewModel {
   final formKey = GlobalKey<FormState>();
   DateTime? selectedtransactionDate;
   DateTime? selecteddeliveryDate;
   List<String> searchcutomer = [""];
-  List<String> warehouse = [""];
-  List<Items> selectedItems = [];
+  List<InvoiceItems> selectedItems = [];
   List<OrderDetailsModel> orderetails = [];
 String displayString='';
   // int quantity= 0;
   bool res = false;
   bool isEdit = false;
   bool isloading = false;
-  
-  List<String> ordetype = ["Sales", "Maintenance", "Shopping Cart"];
+
   TextEditingController customercontroller = TextEditingController();
   TextEditingController searchcustomercontroller = TextEditingController();
   TextEditingController deliverydatecontroller = TextEditingController();
   late String orderId;
 
-  AddOrderModel orderdata = AddOrderModel();
+  AddInvoiceModel invoiceData = AddInvoiceModel();
 
   initialise(BuildContext context, String orderid) async {
     setBusy(true);
-    searchcutomer = await AddOrderServices().fetchcustomer();
-    warehouse = await AddOrderServices().fetchwarehouse();
+    searchcutomer = await AddInvoiceServices().fetchcustomer();
     orderId = orderid;
-   
     //setting aleardy available data
     if (orderId != "") {
       isEdit = true;
-      orderdata = await AddOrderServices().getOrder(orderid) ?? AddOrderModel();
-      customercontroller.text = orderdata.customer ?? "";
-      deliverydatecontroller.text = orderdata.deliveryDate ?? "";
-      selectedItems.addAll(orderdata.items?.toList() ?? []);
+      invoiceData = await AddInvoiceServices().getOrder(orderid) ?? AddInvoiceModel();
+      customercontroller.text = invoiceData.customer ?? "";
+      deliverydatecontroller.text = invoiceData.dueDate ?? "";
+      selectedItems.addAll(invoiceData.items?.toList() ?? []);
       updateTextFieldValue();
+      Logger().i(invoiceData.toJson());
     }
-    orderdata.orderType = "Sales";
+
     notifyListeners();
     setBusy(false);
   }
@@ -53,25 +51,25 @@ String displayString='';
 
     isloading = true;
     if (formKey.currentState!.validate()) {
-      orderdata.items = selectedItems;
+      invoiceData.items = selectedItems;
       bool res = false;
-      Logger().i(orderdata.toJson());
+      Logger().i(invoiceData.toJson());
       if(isEdit == true){
-        res = await AddOrderServices().addOrder(orderdata);
+        res = await AddInvoiceServices().addOrder(invoiceData);
         if (res) {
           if (context.mounted) {
             isloading = false;
             isloading = false;
-            Navigator.pushReplacementNamed(context, Routes.listOrderScreen);
+            Navigator.pushReplacementNamed(context, Routes.listInvoiceScreen);
           }
         }
       }else{
-      res = await AddOrderServices().addOrder(orderdata);
+      res = await AddInvoiceServices().addOrder(invoiceData);
       if (res) {
         if (context.mounted) {
           isloading = false;
           isloading = false;
-          Navigator.pushReplacementNamed(context, Routes.listOrderScreen);
+          Navigator.pushReplacementNamed(context, Routes.listInvoiceScreen);
         }
       }}
     }
@@ -98,57 +96,46 @@ String displayString='';
     if (picked != null && picked != selecteddeliveryDate) {
       selecteddeliveryDate = picked;
       deliverydatecontroller.text = DateFormat('yyyy-MM-dd').format(picked);
-      orderdata.deliveryDate = deliverydatecontroller.text;
+      invoiceData.dueDate = deliverydatecontroller.text;
     }
   }
 
   ///setvalues//
 
   void ondeliveryDobChanged(String value) {
-    orderdata.deliveryDate = value;
+    invoiceData.dueDate = value;
   }
 
   void setcustomer(String? customer) {
-    orderdata.customer = customer;
-    notifyListeners();
-  }
-
-  void setordertype(String? ordertype) {
-    orderdata.orderType = ordertype;
-    notifyListeners();
-  }
-
-  void setwarehouse(String? setWarehouse) {
-    orderdata.setWarehouse = setWarehouse;
+    invoiceData.customer = customer;
     notifyListeners();
   }
 
 
-
-  void setSelectedItems(List<Items> SelectedItems) async {
+  void setSelectedItems(List<InvoiceItems> SelectedItems) async {
     selectedItems = SelectedItems;
     for (var item in selectedItems) {
-      item.warehouse = orderdata.setWarehouse;
-      item.deliveryDate = orderdata.deliveryDate;
+      Logger().i(item.qty);
       item.amount = (item.qty ?? 1.0) * (item.rate ?? 0.0);
     }
-    orderdata.items = selectedItems;
+    invoiceData.items = selectedItems;
     updateTextFieldValue();
-    Logger().i(orderdata.toJson());
-    orderdetails(await AddOrderServices().orderdetails(orderdata));
+    Logger().i(invoiceData.toJson());
+    orderdetails(await AddInvoiceServices().orderdetails(invoiceData));
     notifyListeners();
   }
 
 
   void orderdetails(List<OrderDetailsModel> orderdetail) {
-    orderdata.totalTaxesAndCharges =
+    Logger().i('edited');
+    invoiceData.totalTaxesAndCharges =
         orderdetail.isNotEmpty ? orderdetail[0].totalTaxesAndCharges : 0.0;
-    orderdata.grandTotal =
+    invoiceData.grandTotal =
         orderdetail.isNotEmpty ? orderdetail[0].grandTotal : 0.0;
-    orderdata.discountAmount =
+    invoiceData.discountAmount =
         orderdetail.isNotEmpty ? orderdetail[0].discountAmount : 0.0;
-    orderdata.total = orderdetail.isNotEmpty ? orderdetail[0].netTotal : 0.0;
-    orderdata.netTotal = orderdetail.isNotEmpty ? orderdetail[0].netTotal : 0.0;
+    invoiceData.total = orderdetail.isNotEmpty ? orderdetail[0].netTotal : 0.0;
+    invoiceData.netTotal = orderdetail.isNotEmpty ? orderdetail[0].netTotal : 0.0;
   }
 
   void updateItemQuantity(int index, int quantityChange) async {
@@ -157,12 +144,12 @@ String displayString='';
           (selectedItems[index].qty ?? 0.0) + quantityChange.toDouble();
       selectedItems[index].amount = (selectedItems[index].qty ?? 0.0) *
           (selectedItems[index].rate ?? 0.0);
-      orderdetails(await AddOrderServices().orderdetails(orderdata));
+      orderdetails(await AddInvoiceServices().orderdetails(invoiceData));
     }
     notifyListeners();
   }
 
-  double getQuantity(Items item) {
+  double getQuantity(InvoiceItems item) {
     return item.qty ?? 1;
   }
 
@@ -178,8 +165,8 @@ String displayString='';
 
   void deleteitem(int index) async {
    selectedItems.removeAt(index);
-   orderdata.items = selectedItems;
-   orderdetails(await AddOrderServices().orderdetails(orderdata));
+   invoiceData.items = selectedItems;
+   orderdetails(await AddInvoiceServices().orderdetails(invoiceData));
    updateTextFieldValue();
     notifyListeners();
    Logger().i(selectedItems.length);

@@ -151,7 +151,7 @@ class AddOrderServices {
       );
 
       if (response.statusCode == 200) {
-        Fluttertoast.showToast(msg: "Order created successfully");
+        Fluttertoast.showToast(msg: response.data['message'].toString());
         return true;
       } else {
         Fluttertoast.showToast(msg: "UNABLE TO Order!");

@@ -187,7 +187,7 @@ class AddQuotationModel extends BaseViewModel {
     selectedItems = SelectedItems;
     for (var item in selectedItems) {
 
-      item.amount = (item.qty ?? 0.0) * (item.rate ?? 0.0);
+      item.amount = (item.qty ?? 1.0) * (item.rate ?? 0.0);
     }
     quotationdata.items = selectedItems;
     updateTextFieldValue();
